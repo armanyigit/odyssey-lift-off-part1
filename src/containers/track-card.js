@@ -2,14 +2,14 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { colors, mq } from '../styles';
 import { humanReadableTimeFromSeconds } from '../utils/helpers';
-import {Link} from '@reach/router';
-import {gql, useMutation} from '@apollo/client';
+import { Link } from '@reach/router';
+import { gql, useMutation } from '@apollo/client';
 
 /**
  * Mutation to increment a track's number of views
  */
 const INCREMENT_TRACK_VIEWS = gql`
-  mutation IncrementTrackViews($incrementTrackViewsId: ID!) {
+  mutation IncrementTrackViewsMutation($incrementTrackViewsId: ID!) {
     incrementTrackViews(id: $incrementTrackViewsId) {
       code
       success
@@ -21,18 +21,20 @@ const INCREMENT_TRACK_VIEWS = gql`
     }
   }
 `;
+
 /**
  * Track Card component renders basic info in a card format
  * for each track populating the tracks grid homepage.
  */
 const TrackCard = ({ track }) => {
-  const {title, thumbnail, author, length, modulesCount, id} = track;
-  
+  const { title, thumbnail, author, length, modulesCount, id } = track;
+
   const [incrementTrackViews] = useMutation(INCREMENT_TRACK_VIEWS, {
-    variables: {incrementTrackViewsId: id},
-    onCompleted: data => {
-      console.log(data)
-    }
+    variables: { incrementTrackViewsId: id },
+    // to observe what the mutation response returns
+    onCompleted: (data) => {
+      console.log(data);
+    },
   });
 
   return (
@@ -48,8 +50,7 @@ const TrackCard = ({ track }) => {
             <AuthorAndTrack>
               <AuthorName>{author.name}</AuthorName>
               <TrackLength>
-                {modulesCount} modules -{' '}
-                {humanReadableTimeFromSeconds(length)}
+                {modulesCount} modules - {humanReadableTimeFromSeconds(length)}
               </TrackLength>
             </AuthorAndTrack>
           </CardFooter>
@@ -89,6 +90,7 @@ const CardContainer = styled(Link)({
     backgroundColor: colors.pink.lightest,
   },
   cursor: 'pointer',
+  textDecoration: 'none',
 });
 
 const CardContent = styled.div({
